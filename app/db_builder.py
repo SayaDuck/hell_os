@@ -3,7 +3,7 @@ import hashlib
 
 DB_FILE = "data.db"
 text_factory = str
-salt = b"I am a static, plaintext salt!!@#T gp127 They're actually more effective than one might think..."
+salt = "I am a static, plaintext salt!!@#T gp127 They're actually more effective than one might think..."
 
 # salts and hashes the given string
 def saltString(string, salt):
@@ -16,8 +16,7 @@ def createTables():
     c = db.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT,
               password TEXT, currency INTEGER, rank INTEGER, fairies INTEGER, fruits TEXT);""") #
-    c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (id INTEGER PRIMARY KEY,
-              fruit_type TEXT, stage_of_growth INTEGER);""")
+    c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (id INTEGER PRIMARY KEY, fruit_type TEXT, stage_of_growth INTEGER);""")
     c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (id INTEGER PRIMARY KEY, fruit TEXT, rarity INTEGER, fun_fact TEXT);""")
     c.execute("""CREATE TABLE IF NOT EXISTS store (id INTEGER PRIMARY KEY, name TEXT, fruit_stats_ID INTEGER, cost INTEGER, rank INTEGER);""")
     #add another table here
@@ -27,20 +26,17 @@ def createTables():
 
 
 createTables()
-#Below is just random junk for refrencing
-"""
+
 # adds user info to user table
-def register(username, password, blogname, blogdescription):
+def register(username, password, location, fruits):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    #Finds the current date and time based on the local time
-    dateAndTimeTup = c.execute("SELECT datetime('now','localtime');").fetchone()
-    dateAndTime = str(''.join(map(str, dateAndTimeTup)))
-    command = "INSERT INTO users (username, password, blogname, blogdescription, time) VALUES (?,?,?,?,?);"
-    c.execute(command, (username, password, blogname, blogdescription, dateAndTime))
+    command = "INSERT INTO users (username, password, location, fruits) VALUES (?,?,0,1,0,?);"
+    c.execute(command, (username, password, location, fruits))
     db.commit()
     db.close()
+
 
 # returns whether or not username is in user table
 def checkUsername(username):
@@ -54,6 +50,7 @@ def checkUsername(username):
     db.close()
     return found
 
+
 # prints user table (for testing purposes)
 def printDatabase():
     db = sqlite3.connect(DB_FILE)
@@ -63,13 +60,14 @@ def printDatabase():
     for row in c.execute("SELECT * FROM users;"):
         print(row)
     print("-------Entries Table----------")
-    for row in c.execute("SELECT * FROM entries;"):
+    for row in c.execute("SELECT * FROM fruit_stats;"):
         print(row)
     db.commit()
     db.close()
 
+
 # returns information about a user from the specified column
-# col can be 'id', 'password', 'blogname', or 'blogdescription'
+# col can be 'password', 'location', 'money', 'rank', or 'fairy'
 def getInfo(username, col):
     if checkUsername(username):
         db = sqlite3.connect(DB_FILE)
@@ -82,6 +80,7 @@ def getInfo(username, col):
         return info
     return None
 
+"""
 #Gets a username based on a user id
 def getUsername(userID):
     db = sqlite3.connect(DB_FILE)
