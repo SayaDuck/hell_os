@@ -10,3 +10,6 @@ dragosL -- 2021-04-26 15:58
 ishitaG -- 2021-04-26 16:21
 - Finish register page
 - To-do: fix spacing (margins, etc)
+
+dragosL -- 2021-04-26 16:22
+- Added db_builder beginnings
