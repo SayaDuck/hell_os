@@ -1,5 +1,12 @@
 jonathanL -- 2021-04-26 14:24
-Basic folder/file structure uploaded.
+- Basic folder/file structure uploaded.
+
+ishitaG -- 2021-04-26 14:35
+- Create skeletal register page
 
 dragosL -- 2021-04-26 15:58
-Succesfully installed VScode.
+- Succesfully installed VScode.
+
+ishitaG -- 2021-04-26 16:21
+- Finish register page
+- To-do: fix spacing (margins, etc)
