@@ -1,2 +1,5 @@
 jonathanL -- 2021-04-26 14:24
-Basic folder/file structure uploaded
+Basic folder/file structure uploaded.
+
+dragosL -- 2021-04-26 15:58
+Succesfully installed VScode.
