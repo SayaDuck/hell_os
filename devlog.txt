@@ -14,6 +14,9 @@ ishitaG -- 2021-04-26 16:21
 dragosL -- 2021-04-26 16:22
 - Added db_builder beginnings
 
-ishitaG -- 2021-4-26 16:49
+ishitaG -- 2021-04-26 16:49
 - Create login page
 - Add folder structure for static files
+
+jonathanL -- 2021-04-27 09:29
+- flask app work
