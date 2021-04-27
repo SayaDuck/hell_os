@@ -12,25 +12,22 @@ def createTables():
     c = db.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT,
               password TEXT, location TEXT, currency INTEGER, rank INTEGER, fairies INTEGER, fruits TEXT);""") #
-    c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (id INTEGER PRIMARY KEY, fruit_type TEXT, stage_of_growth INTEGER);""")
+    c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (fruit_id INTEGER PRIMARY KEY, user_id INTEGER, fruit_type TEXT, stage_of_growth INTEGER);""")
     c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (id INTEGER PRIMARY KEY, fruit TEXT, rarity INTEGER, fun_fact TEXT);""")
     c.execute("""CREATE TABLE IF NOT EXISTS store (id INTEGER PRIMARY KEY, name TEXT, fruit_stats_ID INTEGER, cost INTEGER, rank INTEGER);""")
-    #add another table here
-    #c.execute("""CREATE TABLE IF NOT EXISTS store (id INTEGER PRIMARY KEY, name TEXT, fruit_stats_ID INTEGER, cost INTEGER, rank INTEGER);""")
     db.commit()
     db.close()
 
 
-# createTables()
+createTables()
 
 # adds user info to user table
 def register(username, password, location, fruits):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    
-    #command = "INSERT INTO users (username, password, location, fruits) VALUES (?,?,0,1,0,?);"
-    #c.execute(command, (username, password, location, fruits))
+    command = "INSERT INTO users (username, password, location, fruits) VALUES (?,?,?,0,1,0,?);"
+    c.execute(command, (username, password, location, fruits))
     db.commit()
     db.close()
 
@@ -56,6 +53,9 @@ def printDatabase():
     print("--------Users Table-----------")
     for row in c.execute("SELECT * FROM users;"):
         print(row)
+    print("--------Fruitling Table-------")
+    for row in c.execute("SELECT * FROM users;"):
+        print(row)
     print("-------Fruit Table----------")
     for row in c.execute("SELECT * FROM fruit_stats;"):
         print(row)
@@ -78,17 +78,40 @@ def getInfo(username, col):
         return info
     return None
 
-# adds user info to user table
-def add_fruit(fruit, rarity, fact): #adds a fruit to the game
+#creates a new fruitling belonging to a user
+def new_fruit(user_id, fruit_type):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO users (fruit, rarity, fact) VALUES (?,?,?);"
-    c.execute(command, (username, password, location, fruits))
+    command = "INSERT INTO fruitlings (user_id, fruit_type) VALUES (?,?,0)"
+    c.execute(command, (user_id, fruit_type))
+    username = getUsername(user_id)
+    user_fruits = getInfo(username, fruits)
+    user_fruits = user_fruits + c.execute("SELECT COUNT(*) FROM fruitlings") - 1
+    c.execute("UPDATE users SET fruits=? WHERE user_id=?;", (user_fruits, user_id))
     db.commit()
     db.close()
 
-"""
+#grow a fruit
+def grow_fruit(fruit_id, growth):
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    command = ("UPDATE fruitlings SET growth=? WHERE fruit_id=?;", (growth + 1, fruit_id))
+    db.commit()
+    db.close()
+
+# adds fruit to the game
+def add_fruit(fruit, rarity, fact):
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    command = "INSERT INTO fruit_stats (fruit, rarity, fact) VALUES (?,?,?);"
+    c.execute(command, (fruit, rarity, fact))
+    db.commit()
+    db.close()
+
+
 #Gets a username based on a user id
 def getUsername(userID):
     db = sqlite3.connect(DB_FILE)
@@ -101,6 +124,7 @@ def getUsername(userID):
         return info
     return info[0]
 
+"""
 # changes a user's blog info given a new blog name and description
 def updateBlogInfo(username, blogname, desc):
     if checkUsername(username):
