@@ -1,13 +1,9 @@
 import sqlite3
-#import hashlib
+
 
 DB_FILE = "data.db"
 text_factory = str
-#salt = "I am a static, plaintext salt!!@#T gp127 They're actually more effective than one might think..."
 
-# salts and hashes the given string
-#def saltString(string, salt):
-#    return hashlib.pbkdf2_hmac('sha256', string.encode('utf-8'), salt, 100000)
 
 # makes users and entries table in database if they do not exist already
 def createTables():
@@ -32,8 +28,9 @@ def register(username, password, location, fruits):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO users (username, password, location, fruits) VALUES (?,?,0,1,0,?);"
-    c.execute(command, (username, password, location, fruits))
+    
+    #command = "INSERT INTO users (username, password, location, fruits) VALUES (?,?,0,1,0,?);"
+    #c.execute(command, (username, password, location, fruits))
     db.commit()
     db.close()
 
