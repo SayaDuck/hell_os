@@ -24,3 +24,7 @@ jonathanL -- 2021-04-27 09:29
 
 deanC -- 2021-04-27 10:04
 -db table initialized
+
+ishitaG -- 2021-04-27 16:07
+- Create skeletal index page 
+- Create basic trivia page
