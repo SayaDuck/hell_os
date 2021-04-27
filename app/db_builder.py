@@ -1,13 +1,13 @@
 import sqlite3
-import hashlib
+#import hashlib
 
 DB_FILE = "data.db"
 text_factory = str
-salt = "I am a static, plaintext salt!!@#T gp127 They're actually more effective than one might think..."
+#salt = "I am a static, plaintext salt!!@#T gp127 They're actually more effective than one might think..."
 
 # salts and hashes the given string
-def saltString(string, salt):
-    return hashlib.pbkdf2_hmac('sha256', string.encode('utf-8'), salt, 100000)
+#def saltString(string, salt):
+#    return hashlib.pbkdf2_hmac('sha256', string.encode('utf-8'), salt, 100000)
 
 # makes users and entries table in database if they do not exist already
 def createTables():
@@ -25,7 +25,7 @@ def createTables():
     db.close()
 
 
-createTables()
+# createTables()
 
 # adds user info to user table
 def register(username, password, location, fruits):
@@ -59,12 +59,13 @@ def printDatabase():
     print("--------Users Table-----------")
     for row in c.execute("SELECT * FROM users;"):
         print(row)
-    print("-------Entries Table----------")
+    print("-------Fruit Table----------")
     for row in c.execute("SELECT * FROM fruit_stats;"):
         print(row)
     db.commit()
     db.close()
 
+printDatabase()
 
 # returns information about a user from the specified column
 # col can be 'password', 'location', 'money', 'rank', or 'fairy'
