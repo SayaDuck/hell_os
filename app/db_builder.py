@@ -15,7 +15,7 @@ def createTables():
     db.text_factory = text_factory
     c = db.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT,
-              password TEXT, currency INTEGER, rank INTEGER, fairies INTEGER, fruits TEXT);""") #
+              password TEXT, location TEXT, currency INTEGER, rank INTEGER, fairies INTEGER, fruits TEXT);""") #
     c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (id INTEGER PRIMARY KEY, fruit_type TEXT, stage_of_growth INTEGER);""")
     c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (id INTEGER PRIMARY KEY, fruit TEXT, rarity INTEGER, fun_fact TEXT);""")
     c.execute("""CREATE TABLE IF NOT EXISTS store (id INTEGER PRIMARY KEY, name TEXT, fruit_stats_ID INTEGER, cost INTEGER, rank INTEGER);""")
@@ -79,6 +79,16 @@ def getInfo(username, col):
         db.close()
         return info
     return None
+
+# adds user info to user table
+def add_fruit(fruit, rarity, fact): #adds a fruit to the game
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    command = "INSERT INTO users (fruit, rarity, fact) VALUES (?,?,?);"
+    c.execute(command, (username, password, location, fruits))
+    db.commit()
+    db.close()
 
 """
 #Gets a username based on a user id
