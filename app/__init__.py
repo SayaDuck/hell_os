@@ -11,7 +11,7 @@ import os
 import sqlite3
 import hashlib
 from hashlib import scrypt
-import db_builder as dbb # BIG
+import app.db_builder as dbb # BIG
 
 
 DB_FILE="data.db"
@@ -26,26 +26,30 @@ app = Flask(__name__)
 # salts and hashes the given string, returns string with 32-char salt appended onto the end
 def saltStringRandom(string):
     oursalt = os.urandom(32)
-    hashedsalted = hashlib.scrypt(string.encode('utf-8'), oursalt, N=16384, r=8, p=1, dklen=32)
+    hashedsalted = hashlib.pbkdf2_hmac('sha256', bytes(str(string), encoding='utf8'), oursalt, 100000)
     hashedsalted += oursalt
-    return hashedsalted
+    print(hashedsalted)
+    return str(hashedsalted)
 
 def saltStringExisting(string, salt):
-    hashedsalted = hashlib.scrypt(string.encode('utf-8'), salt, N=16384, r=8, p=1, dklen=32)
+    hashedsalted = hashlib.pbkdf2_hmac('sha256', bytes(string, encoding='utf8'), bytes(salt, encoding='utf8'), 100000)
     hashedsalted += salt
-    return hashedsalted
+    print(hashedsalted)
+    return str(hashedsalted)
 
 # getting the salt from a string hashed w/ salt by the above method for use in comparisons.
 def getHashSalt(string):
     hashsalt = string[:32]
     return hashsalt
 
+
 @app.route("/")  #make sure to add root changing with stuff in session
 def root():
     if 'username' in session:
         return render_template('index.html', user = session.get['username'])
     else:
-        return render_template('register.html')
+        return redirect(url_for('login'))
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -54,26 +58,31 @@ def login():
     if 'username' in session:
         return redirect(url_for('root'))
 
-    #simple error check (currently empty field check), expand later
-    if (request.form['username'] == '' or request.form['password'] == ''): #Check if fields are filled
-        "hi" #insert error handling here
+    if len(request.form) > 0:
+        
+        #simple error check (currently empty field check), expand later
+        if (request.form['inputusername'] == '' or request.form['inputpassword'] == ''): #Check if fields are filled
+            "hi" #insert error handling here
 
-    #get salt from the password and hash+salt password
-    password = saltStringExisting(request.form['password'], getHashSalt(data[2]))
+        if dbb.checkUsername(request.form['inputusername']):
+            #get salt from the password and hash+salt password
+            password = saltStringExisting(request.form['inputpassword'], getHashSalt(dbb.getInfo(request.form['inputusername'],'password')))
 
-    #compare hash+salt pws, if they match, start session
-    if str(password) == str(data[2]): # yoo correct password?!
-        print(data[0]) #just printing the user id :flushed:
-        session['ID'] = int(data[0])
-        session['username'] = data[1]
-        print(session['username']) #diagnostic print
-        return redirect(url_for('root'))
-    
-    else: # yoo incorrect password >:(
-        return redirect(url_for('login')) #add error to this later
+            #compare hash+salt pws, if they match, start session
+            if str(password) == str(dbb.getInfo(request.form['inputusername'],'password')): # yoo correct password?!
+                print(dbb.getInfo(request.form['inputusername'],'id')) #just printing the user id :flushed:
+                session['ID'] = int(dbb.getInfo(request.form['inputusername'],'id'))
+                session['username'] = request.form['inputusername']
+                print(session['username']) #diagnostic print
+                return redirect(url_for('root'))
+        
+            else: # yoo incorrect password >:(
+                return redirect(url_for('login')) #add error to this later
+        else:
+            return render_template('login.html')
+            #add error: username doesn't exist
 
     return render_template('login.html')
-
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -81,28 +90,25 @@ def register():
     if "username" in session:
         return redirect(url_for('root'))   
 
-    if (request.form['username'] == '' or request.form['password'] == '' or request.form['confPassword'] == ''):
-        "fields blank error"
-    else:
-        if (dbb.checkUsername(request.form['username']) == True):
-            "user already exists error"
-        #if there isn't a dupe user, move on to the actual meat.
+    if len(request.form) > 0:
+        #print(request.form)
+
+        if (request.form['inputusername'] == '' or request.form['inputpassword'] == ''):
+            "fields blank error"
+
         else:
-            #getting the user's id to use with the new fruit
-            c.execute('SELECT MAX(id) FROM users')
-            newid = c.fetchall() + 1
+            if dbb.checkUsername(request.form['inputusername']):
+                "user already exists error"
+            #if there isn't a dupe user, move on to the actual meat.
+            else:            
+                #registering the user
+                dbb.register(request.form['inputusername'], saltStringRandom(request.form['inputpassword']), request.form['location'], "")
+                
+                #registering the fruit
+                dbb.new_fruit(dbb.getInfo(request.form['inputusername'], id), request.form['fruit'])
 
-            #registering the fruit
-            dbb.new_fruit(newid, request.form['fruit'])
 
-            #getting the fruit's id to use with the new user
-            c.execute('SELECT MAX(fruit_id) FROM fruitlings')
-            fruitid = c.fetchall()
-            
-            #registering the user
-            dbb.register(request.form['username'], saltStringRandom(request.form['password']), request.form['location'], str(fruitid) + ",")
-
-            return redirect(url_for('login'))
+                return redirect(url_for('login'))
 
     #without submission of form
     return render_template('register.html')
