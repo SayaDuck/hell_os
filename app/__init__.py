@@ -33,7 +33,7 @@ def saltStringRandom(string):
 
 def saltStringExisting(string, salt):
     hashedsalted = hashlib.pbkdf2_hmac('sha256', bytes(string, encoding='utf8'), bytes(salt, encoding='utf8'), 100000)
-    hashedsalted += salt
+    hashedsalted += bytes(salt, encoding='utf8')
     print(hashedsalted)
     return str(hashedsalted)
 
