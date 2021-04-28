@@ -55,7 +55,7 @@ def login():
     if 'username' in session:
         return redirect(url_for('root'))
 
-    if "login" in request.form:
+    if len(request.form) > 0:
         #simple error check (currently empty field check), expand later
         if request.args['inputusername'] == '' or request.args['inputpassword'] == '': #Check if fields are filled
             "hi" #insert error handling here
@@ -81,7 +81,7 @@ def login():
         else: # yoo incorrect password >:(
             return redirect(url_for('login')) #add error to this later
 
-    return redirect(url_for('login'))
+    return render_template('login.html')
 
 
 
@@ -93,7 +93,7 @@ def register():
         return redirect(url_for('root'))   
 
     # checking for if they input something
-    if "register" in request.form:
+    if len(request.form) > 0:
         print(request.args)
         # checking for existing usernames
         username = request.args['inputusername']
