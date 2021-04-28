@@ -26,7 +26,7 @@ def register(username, password, location, fruits):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO users (username, password, location, 0, 1, 0, fruits) VALUES (?,?,?,?,?,?,?);"
+    command = "INSERT INTO users (username, password, location, currency, rank, fairies, fruits) VALUES (?,?,?,0,1,0,?);"
     c.execute(command, (username, password, location, fruits))
     db.commit()
     db.close()
@@ -87,7 +87,7 @@ def new_fruit(user_id, fruit_type):
     c.execute(command, (user_id, fruit_type))
     username = getUsername(user_id)
     user_fruits = getInfo(username, fruits)
-    user_fruits = user_fruits + c.execute("SELECT COUNT(*) FROM fruitlings") - 1
+    user_fruits = user_fruits + str(c.execute("SELECT COUNT(*) FROM fruitlings") - 1) + ","
     c.execute("UPDATE users SET fruits=? WHERE user_id=?;", (user_fruits, user_id))
     db.commit()
     db.close()
