@@ -11,7 +11,7 @@ import os
 import sqlite3
 import hashlib
 from hashlib import scrypt
-import db_builder as dbb # BIG
+import app.db_builder as dbb # BIG
 
 
 DB_FILE="data.db"
@@ -40,73 +40,88 @@ def getHashSalt(string):
     hashsalt = string[:32]
     return hashsalt
 
-@app.route("/")
+@app.route("/")  #make sure to add root changing with stuff in session
 def root():
-   return render_template('index.html')
-
-@app.route("/login")
-def login():
-    #check if already logged in
     if 'username' in session:
+        return render_template('index.html', user = session.get['username'])
+    else:
         return render_template('index.html')
 
-    #simple error check (currently empty field check), expand later
-    if request.args['username'] == '' or request.args['password'] == '': #Check if fields are filled
-        "hi" #insert error handling here
 
-    #first of all, get the username input
-    username = request.args['username']
+@app.route("/login", methods=['GET', 'POST'])
+def login():
 
-    #Then find the corresponding user info from the db
-    c = db.cursor() 
-    c.execute('SELECT * FROM users WHERE username=?', (username,))
-    data = c.fetchall()[0] #whew. only one. of em.
+    #check if already logged in
+    if 'username' in session:
+        return redirect(url_for('root'))
 
-    #get salt from the password and hash+salt password
-    password = saltStringExisting(request.args['password'], getHashSalt(data[2]))
+    if "login" in request.form:
+        #simple error check (currently empty field check), expand later
+        if request.args['inputusername'] == '' or request.args['inputpassword'] == '': #Check if fields are filled
+            "hi" #insert error handling here
 
-    #compare hash+salt pws, if they match, start session
-    if password == data[2]:
-        print(data[0]) #just printing the user id :flushed:
-        session['ID'] = int(data[0])
-        session['username'] = data[1]
+        #first of all, get the username input
+        username = request.args['inputusername']
 
-        return render_template('index.html') #make sure to add index html changing with stuff in session
+        #Then find the corresponding user info from the db
+        c = db.cursor() 
+        c.execute('SELECT * FROM users WHERE username=?', (username,))
+        data = c.fetchall()[0] #whew. only one. of em.
 
-    return render_template('login.html')
+        #get salt from the password and hash+salt password
+        password = saltStringExisting(request.args['inputpassword'], getHashSalt(data[2]))
+
+        #compare hash+salt pws, if they match, start session
+        if str(password) == str(data[2]): # yoo correct password?!
+            print(data[0]) #just printing the user id :flushed:
+            session['ID'] = int(data[0])
+            session['username'] = data[1]
+            print(session['username']) #diagnostic print
+            return redirect(url_for('root'))
+        else: # yoo incorrect password >:(
+            return redirect(url_for('login')) #add error to this later
+
+    return redirect(url_for('login'))
+
+
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     # if user is logged in already
     if "username" in session:
-        return render_template('index.html')
-        # bother with the line below later
-        # return redirect(url_for('root'))
+        return redirect(url_for('root'))   
 
-    # checking for existing usernames
-    username = request.args['username']
-    c.execute('SELECT * FROM users WHERE username=?', (username,))
-    sameusernames = c.fetchall()
-    if len(sameusernames) > 0:
-        return render_template('error.html', error = 'A user with that username already exists')
-    
-    #if there isn't a dupe user, move on to the actual meat.
-    else:
-        #getting the user's id to use with the new fruit
-        c.execute('SELECT MAX(id) FROM users')
-        newid = c.fetchall() + 1
-
-        #registering the fruit
-        dbb.new_fruit(newid, request.args['fruit'])
-
-        #getting the fruit's id to use with the new user
-        c.execute('SELECT MAX(fruit_id) FROM fruitlings')
-        fruitid = c.fetchall()
+    # checking for if they input something
+    if "register" in request.form:
+        print(request.args)
+        # checking for existing usernames
+        username = request.args['inputusername']
+        c.execute('SELECT * FROM users WHERE username=?', (username,))
+        sameusernames = c.fetchall()
+        if len(sameusernames) > 0:
+            return render_template('error.html', error = 'A user with that username already exists')
         
-        #registering the user
-        dbb.register(username, saltStringRandom(request.args['password']), request.args['location'], str(fruitid) + ",")
+        #if there isn't a dupe user, move on to the actual meat.
+        else:
+            #getting the user's id to use with the new fruit
+            c.execute('SELECT MAX(id) FROM users')
+            newid = c.fetchall() + 1
 
-        return render_template('register.html')
+            #registering the fruit
+            dbb.new_fruit(newid, request.args['fruit'])
+
+            #getting the fruit's id to use with the new user
+            c.execute('SELECT MAX(fruit_id) FROM fruitlings')
+            fruitid = c.fetchall()
+            
+            #registering the user
+            dbb.register(username, saltStringRandom(request.args['inputpassword']), request.args['location'], str(fruitid) + ",")
+
+            return redirect(url_for('login'))
+
+    #without submission of form
+    return render_template('register.html')
 
 # epic logout session pop gaming
 @app.route("/logout")

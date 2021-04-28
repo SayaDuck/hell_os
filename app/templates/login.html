@@ -8,15 +8,15 @@
 </head>
 
 <body>
-    <form action="/" method="POST">
+    <form action="/login" method="POST">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username">
+            <input type="text" class="form-control" id="username" name="inputusername">
             <div id="userHelp" class="form-text">Enter your username</div>
         </div>
         <div class="mb-3">
             <label for="InputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <input type="password" class="form-control" id="password" name="inputpassword">
             <div id="pwdHelp" class="form-text">Enter your password (minimum 8 characters)</div>
         </div>
         <button type="submit" class="btn btn-primary">Log In</button> 
