@@ -72,7 +72,7 @@ def getInfo(username, col):
         db.text_factory = text_factory
         c = db.cursor()
         #Finds the user with the correct username
-        info = c.execute("SELECT " + col + " FROM users WHERE username=?;", [username]).fetchone()[0]
+        info = c.execute("SELECT " + col + " FROM users WHERE username=?;", [username]).fetchone()
         db.commit()
         db.close()
         return info
