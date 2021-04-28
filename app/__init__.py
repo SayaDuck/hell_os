@@ -104,7 +104,7 @@ def register():
         fruitid = c.fetchall()
         
         #registering the user
-        dbb.register(username, saltString(password, oursalt), location, str(fruitid) + ",") #fix this somehow
+        dbb.register(username, saltStringRandom(request.args['password']), request.args['location'], str(fruitid) + ",")
 
         return render_template('register.html')
 
