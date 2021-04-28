@@ -26,7 +26,7 @@ def register(username, password, location, fruits):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO users (username, password, location, fruits) VALUES (?,?,?,0,1,0,?);"
+    command = "INSERT INTO users (username, password, location, 0, 1, 0, fruits) VALUES (?,?,?,?,?,?,?);"
     c.execute(command, (username, password, location, fruits))
     db.commit()
     db.close()
@@ -123,6 +123,10 @@ def getUsername(userID):
     if info is None:
         return info
     return info[0]
+
+def test():
+    register("DeanC", "password", "New York", "apple")
+    new_fruit(0, "bananna")
 
 """
 # changes a user's blog info given a new blog name and description
