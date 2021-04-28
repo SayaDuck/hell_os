@@ -11,7 +11,7 @@ import os
 import sqlite3
 import hashlib
 from hashlib import scrypt
-import app.db_builder as dbb # BIG
+import db_builder as dbb # BIG
 
 
 DB_FILE="data.db"
@@ -88,12 +88,6 @@ def logout():
 def buyfruit(fruitname):
     c = db.cursor()
     c.execute()
-
-
-def 
-
-
-
 
 
 if __name__ == "__main__":
