@@ -55,11 +55,11 @@ def login():
         return redirect(url_for('root'))
 
     #simple error check (currently empty field check), expand later
-    if (request.form['username'] == '' or request.form['password'] == ''): #Check if fields are filled
+    if (request.form['inputusername'] == '' or request.form['inputpassword'] == ''): #Check if fields are filled
         "hi" #insert error handling here
 
     #get salt from the password and hash+salt password
-    password = saltStringExisting(request.form['password'], getHashSalt(data[2]))
+    password = saltStringExisting(request.form['inputpassword'], getHashSalt(data[2]))
 
     #compare hash+salt pws, if they match, start session
     if str(password) == str(data[2]): # yoo correct password?!
@@ -71,20 +71,18 @@ def login():
     
     else: # yoo incorrect password >:(
         return redirect(url_for('login')) #add error to this later
-
     return render_template('login.html')
-
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     # if user is logged in already
     if "username" in session:
         return redirect(url_for('root'))   
-
-    if (request.form['username'] == '' or request.form['password'] == '' or request.form['confPassword'] == ''):
+    print(request.form)
+    if (request.form['inputusername'] == '' or request.form['inputpassword'] == ''):
         "fields blank error"
     else:
-        if (dbb.checkUsername(request.form['username']) == True):
+        if (dbb.checkUsername(request.form['inputusername']) == True):
             "user already exists error"
         #if there isn't a dupe user, move on to the actual meat.
         else:
@@ -100,7 +98,7 @@ def register():
             fruitid = c.fetchall()
             
             #registering the user
-            dbb.register(request.form['username'], saltStringRandom(request.form['password']), request.form['location'], str(fruitid) + ",")
+            dbb.register(request.form['inputusername'], saltStringRandom(request.form['inputpassword']), request.form['location'], str(fruitid) + ",")
 
             return redirect(url_for('login'))
 
