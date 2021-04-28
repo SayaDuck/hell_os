@@ -8,20 +8,20 @@
 </head>
 
 <body>
-    <form action="/login" method="POST">
+    <form action="/register" method="POST">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username">
+            <input type="text" class="form-control" id="username" name="inputusername">
             <div id="userHelp" class="form-text">Set your username</div>
         </div>
         <div class="mb-3">
             <label for="InputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <input type="password" class="form-control" id="password" name="inputpassword">
             <div id="pwdHelp" class="form-text">Set your password (minimum 8 characters)</div>
         </div>
         <div class="mb-3">
-            <label for="confInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="confInputPassword1">
+            <label for="confPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="confpassword" name="confpassword">
             <div id="confPwdHelp" class="form-text">Re-enter your password</div>
         </div>
         <div class="mb-3">
