@@ -32,3 +32,7 @@ ishitaG -- 2021-04-27 16:07
 
 jonathanL -- 2021-04-27 17:47
 - Work on registration & auth
+
+jonathanL -- 2021-04-28 15:57
+- finally "finished" auth
+- wrote some of the epic-est comments that ever epic'd for auth
