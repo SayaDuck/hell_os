@@ -84,6 +84,7 @@ def register():
         # return redirect(url_for('root'))
 
     # checking for existing usernames
+    username = request.args['username']
     c.execute('SELECT * FROM users WHERE username=?', (username,))
     sameusernames = c.fetchall()
     if len(sameusernames) > 0:
