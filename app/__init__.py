@@ -20,7 +20,7 @@ c = db.cursor()
 
 
 app = Flask(__name__)
-
+app.secret_key = os.urandom(24)
 
 
 # salts and hashes the given string, returns string with 32-char salt appended onto the end
@@ -30,23 +30,26 @@ def saltStringRandom(string):
     hashedsalted += oursalt
     print(hashedsalted)
     return str(hashedsalted)
+ 
+defaultsalt = "Sadly after many hours trying to fix our issues in the salting + hashing, we were forced to go with a static salt for simplicity." 
 
 def saltStringExisting(string, salt):
-    hashedsalted = hashlib.pbkdf2_hmac('sha256', bytes(string, encoding='utf8'), bytes(salt, encoding='utf8'), 100000)
-    hashedsalted += bytes(salt, encoding='utf8')
+    hashedsalted = hashlib.pbkdf2_hmac('sha256',bytes(string, encoding='utf8'), bytes(salt, encoding='utf8'), 100000)
+    #hashedsalted += bytes(salt, encoding='utf8')
     print(hashedsalted)
     return str(hashedsalted)
 
 # getting the salt from a string hashed w/ salt by the above method for use in comparisons.
-def getHashSalt(string):
-    hashsalt = string[:32]
-    return hashsalt
+# def getHashSalt(string):
+#     hashsalt = string[-32:]
+#     print(hashsalt)
+#     return hashsalt
 
 
 @app.route("/")  #make sure to add root changing with stuff in session
 def root():
     if 'username' in session:
-        return render_template('index.html', user = session.get['username'])
+        return render_template('index.html', user=session.get('username'))
     else:
         return redirect(url_for('login'))
 
@@ -65,15 +68,39 @@ def login():
             "hi" #insert error handling here
 
         if dbb.checkUsername(request.form['inputusername']):
+            # epic diagnostic prints
+            # print('first')
+            # print(dbb.getInfo(request.form['inputusername'],'password'))
+            # print('endfirst')
+            # print(request.form['inputpassword'])
+
+            # what could have been
+            # password = saltStringExisting(request.form['inputpassword'], getHashSalt(dbb.getInfo(request.form['inputusername'],'password')[0]))
+
+
             #get salt from the password and hash+salt password
-            password = saltStringExisting(request.form['inputpassword'], getHashSalt(dbb.getInfo(request.form['inputusername'],'password')))
+            password = saltStringExisting(request.form['inputpassword'], defaultsalt)
+
+            
+            # more epic diagnostic prints
+            # print('second')
+            # print(password)
+            # print('third')
+            # print((dbb.getInfo(request.form['inputusername'],'password')))
+            # print('fourth')
+            # print(str(password))
+            # print(str((dbb.getInfo(request.form['inputusername'],'password'))))
 
             #compare hash+salt pws, if they match, start session
-            if str(password) == str(dbb.getInfo(request.form['inputusername'],'password')): # yoo correct password?!
+            if str(password) == str(dbb.getInfo(request.form['inputusername'],'password')[0]): # yoo correct password?!
+
                 print(dbb.getInfo(request.form['inputusername'],'id')) #just printing the user id :flushed:
-                session['ID'] = int(dbb.getInfo(request.form['inputusername'],'id'))
+
+                session['ID'] = int(dbb.getInfo(request.form['inputusername'],'id')[0])
                 session['username'] = request.form['inputusername']
+
                 print(session['username']) #diagnostic print
+
                 return redirect(url_for('root'))
         
             else: # yoo incorrect password >:(
@@ -102,10 +129,13 @@ def register():
             #if there isn't a dupe user, move on to the actual meat.
             else:            
                 #registering the user
-                dbb.register(request.form['inputusername'], saltStringRandom(request.form['inputpassword']), request.form['location'], "")
-                
+                # what could have been 
+                # dbb.register(request.form['inputusername'], saltStringRandom(request.form['inputpassword']), request.form['location'], "")
+                dbb.register(request.form['inputusername'], saltStringExisting(request.form['inputpassword'], defaultsalt), request.form['location'], "")
+
                 #registering the fruit
-                dbb.new_fruit(dbb.getInfo(request.form['inputusername'], id), request.form['fruit'])
+                print(dbb.getInfo(request.form['inputusername'], "id"))
+                dbb.new_fruit(int(dbb.getInfo(request.form['inputusername'], "id")[0]), request.form['fruit'])
 
 
                 return redirect(url_for('login'))
@@ -116,8 +146,9 @@ def register():
 # epic logout session pop gaming
 @app.route("/logout")
 def logout():
-    session.pop('UserID', None)
-    return render_template('login.html')
+    session.pop('ID', None)
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
 # -----------------------
 # the non-auth parts!!

@@ -59,3 +59,6 @@ ishitaG -- 2021-4-28 21:32
 
 dragosL -- 2021-4-29 00:04
 - Added the team flag and the README
+
+jonathanL -- 2021-04-29 02:59
+- finally finalized auth (100% working finally yes finalized)
