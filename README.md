@@ -19,4 +19,7 @@ Do you love fruits? Do you like virtual farm simulators? Well this may or may no
 ## Launch Codes
 1. Clone the repo!
 2. Install the required modules: `pip install -r requirements.txt`
-3. Run \_init_.py
+3. Make sure you're in hell_os and not app!
+4. run `db_builder.py` (make sure you're still in the hell_os directory while doing these steps)
+5. run `fruit_stat_builder.py`
+6. `flask run` or `python -m flask run`
