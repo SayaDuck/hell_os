@@ -57,4 +57,5 @@ ishitaG -- 2021-4-28 21:32
 - update the index template to show the users fruits and allow them to level up the fruits
 - add linkage between the pages to allow user to traverse the site
 
-
+dragosL -- 2021-4-29 00:04
+- Added the team flag and the README
