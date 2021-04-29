@@ -155,7 +155,7 @@ def getFruit_Stats(fruit_id):
     return None
 
 def test():
-    register("DeanC", "password", "New York", "0,")
+    register("DeanC", "password", "New York", "")
     print (getUsername(1))
     new_fruit(1, "banana")
     grow_fruit(1, 2)
