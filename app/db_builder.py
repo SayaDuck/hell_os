@@ -61,7 +61,7 @@ def printDatabase():
     db.commit()
     db.close()
 
-printDatabase()
+#printDatabase()
 
 # returns information about a user from the specified column
 # col can be 'password', 'location', 'money', 'rank', or 'fairy'
@@ -148,9 +148,13 @@ def getFruit_Stats(fruit_id):
         c = db.cursor()
         info = c.execute("SELECT * FROM fruitlings WHERE fruit_id=?;", [fruit_id]).fetchall()[0]
         print ("Fruit " + str(info[0]) + ": \n" + "  Type: " + str(info[2]) + "\n  Growth: " + str(info[3]))
+        nutrition = c.execute("SELECT nutrition FROM fruit_stats WHERE fruit_type=?", [info[2].capitalize()]).fetchone()
+        nutrition = nutrition[0]
+        print (nutrition)
+        img = c.execute("SELECT img FROM fruit_stats WHERE fruit_type=?", [info[2].capitalize()]).fetchone()
         db.commit()
         db.close()
-        return info
+        return img
     return None
 
 # deletes all users from the database (for testing purposes)
@@ -173,9 +177,9 @@ def clearFruits():
 def test():
     #clearUsers()
     #clearFruits()
-    register("DeanC", "password", "New York", "")
+    #register("DeanC", "password", "New York", "")
     print (getUsername(1))
-    new_fruit(1, "apple")
+    #new_fruit(1, "apple")
     grow_fruit(1, 2)
     list_fruits(1)
     printDatabase()
