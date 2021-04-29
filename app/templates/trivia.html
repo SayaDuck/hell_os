@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <p class="message"> {{ message }} </p> <!-- Add JS here -->
+    <p class="message" id="magic_message"> {{ message }} </p>
     <h4> {{ question }}</h4>
     <h6> {{ difficulty }}</h6>
     <form action="/trivia" method="POST">
@@ -49,6 +49,7 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <!--<script src="../static/js/trivia.js"></script>-->
 </body>
 
 </html>
