@@ -26,7 +26,7 @@ def register(username, password, location, fruits):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO users (username, password, location, fruits) VALUES (?,?,?,0,1,0,?);"
+    command = "INSERT INTO users (username, password, location, currency, rank, fairies, fruits) VALUES (?,?,?,0,1,0,?);"
     c.execute(command, (username, password, location, fruits))
     db.commit()
     db.close()
@@ -72,7 +72,7 @@ def getInfo(username, col):
         db.text_factory = text_factory
         c = db.cursor()
         #Finds the user with the correct username
-        info = c.execute("SELECT " + col + " FROM users WHERE username=?;", [username]).fetchone()[0]
+        info = c.execute("SELECT " + col + " FROM users WHERE username=?;", [username]).fetchone()
         db.commit()
         db.close()
         return info
@@ -87,7 +87,7 @@ def new_fruit(user_id, fruit_type):
     c.execute(command, (user_id, fruit_type))
     username = getUsername(user_id)
     user_fruits = getInfo(username, fruits)
-    user_fruits = user_fruits + c.execute("SELECT COUNT(*) FROM fruitlings") - 1
+    user_fruits = user_fruits + str(c.execute("SELECT COUNT(*) FROM fruitlings") - 1) + ","
     c.execute("UPDATE users SET fruits=? WHERE user_id=?;", (user_fruits, user_id))
     db.commit()
     db.close()
@@ -123,6 +123,10 @@ def getUsername(userID):
     if info is None:
         return info
     return info[0]
+
+def test():
+    register("DeanC", "password", "New York", "apple")
+    new_fruit(0, "bananna")
 
 """
 # changes a user's blog info given a new blog name and description
