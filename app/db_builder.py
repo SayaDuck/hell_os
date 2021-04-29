@@ -86,8 +86,9 @@ def new_fruit(user_id, fruit_type):
     c.execute(command, (user_id, fruit_type))
     username = getUsername(user_id)
     user_fruits = getInfo(username, "fruits")
-    user_fruits = user_fruits + str(c.execute("SELECT COUNT(*) FROM fruitlings") - 1) + ","
-    c.execute("UPDATE users SET fruits=? WHERE user_id=?;", (user_fruits, user_id))
+    c.execute("SELECT COUNT(*) FROM fruitlings")
+    user_fruits = user_fruits[0] + str(int(c.fetchone()[0]) - 1) + ","
+    c.execute("UPDATE users SET fruits=? WHERE id=?;", (user_fruits, user_id))
     db.commit()
     db.close()
 
@@ -96,7 +97,7 @@ def list_fruits(user_id):
     db.text_factory = text_factory
     c = db.cursor()
     fruit = getInfo(getUsername(user_id), "fruits")
-    for i in fruit.split(','):
+    for i in fruit[0].split(','):
         info = getFruit_Stats(i)
     db.commit()
     db.close()
@@ -135,22 +136,28 @@ def getUsername(userID):
     return info[0]
 
 def getFruit_Stats(fruit_id):
-    if (fruit_id <= (c.execute("SELECT COUNT(*) FROM fruitlings") - 1)):
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    c.execute("SELECT COUNT(*) FROM fruitlings")
+    if (int(fruit_id) <= (int(c.fetchone()[0]) - 1)):
         db = sqlite3.connect(DB_FILE)
         db.text_factory = text_factory
         c = db.cursor()
         info = c.execute("SELECT * FROM fruitlings WHERE fruit_id=?;", [fruit_id]).fetchall()
-        for i in info:
-            print (info[i])
+        print('info') # something in the bottom lines is wrong but idk what
+        print(info)
+        for i in info[0]:
+            print (info[0][i])
         db.commit()
         db.close()
         return info
     return None
 
 def test():
-    register("DeanC", "password", "New York", "apple")
+    register("DeanC", "password", "New York", "0,")
     print (getUsername(1))
-    new_fruit(1, "bannana")
+    new_fruit(1, "banana")
     grow_fruit(1, 2)
     list_fruits(1)
     printDatabase()
