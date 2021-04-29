@@ -74,3 +74,8 @@ jonathanL -- 2021-04-29 05:10
 - copied that as getFruitRank
 - YOOO THE HOME PAGE DISPLAYS PROPERLY WOOOOOO YEAHHHH
 
+jonathanL -- 2021-04-29 06:34
+- README launch codes
+- README roadmap
+- 
+

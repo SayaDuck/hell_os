@@ -9,6 +9,13 @@
 ## Project Description: 
 Do you love fruits? Do you like virtual farm simulators? Well this may or may not be the webapp for you. 
 
+
+## Roadmap:
+- [x] Authentication (w/ hashing & salting!)
+- [x] homepage showing your fruitlings
+- [ ] trivia game to earn money
+- [ ] leveling up fruitlings
+
 ## API Card
 [We used Fruityvice for information about the fruits users own](https://github.com/stuy-softdev/notes-and-code20-21/blob/master/api_kb/411_on_Fruityvice.md)
 
