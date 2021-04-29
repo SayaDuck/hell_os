@@ -69,5 +69,8 @@ deanC -- 2021-04-29 03:40
 jonathanL -- 2021-04-29 05:10
 - fixed expUp
 - edited README
-- adapted getFruit_Stats
+- adapted getFruit_Stats into one massive great helper
+- made getFruitType
+- copied that as getFruitRank
+- YOOO THE HOME PAGE DISPLAYS PROPERLY WOOOOOO YEAHHHH
 

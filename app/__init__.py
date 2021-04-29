@@ -49,7 +49,17 @@ def saltStringExisting(string, salt):
 @app.route("/")  #make sure to add root changing with stuff in session
 def root():
     if 'username' in session:
-        return render_template('index.html', user=session.get('username'))
+        dictionary = []
+        for i in dbb.list_fruits(session.get('ID')): # i love this bit. very much. bless dean for making easily adaptable helper functions that i only needed to modify a tiny bit to get full functionality out of
+            tempdict = {
+                "name": dbb.getFruitType(i), 
+                "url": dbb.getFruit_Stats(i, 'img'), 
+                "desc": dbb.getFruit_Stats(i, 'nutrition'), 
+                "rank": dbb.getFruitRank(i)
+            }
+            dictionary.append(tempdict)
+        print(dictionary)
+        return render_template('index.html', user=session.get('username'), dictionary=dictionary, money=dbb.getInfo(session.get('username'),'exp')[0])
     else:
         return redirect(url_for('login'))
 

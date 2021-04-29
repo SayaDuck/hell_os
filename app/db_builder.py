@@ -64,7 +64,7 @@ def printDatabase():
 #printDatabase()
 
 # returns information about a user from the specified column
-# col can be 'password', 'location', 'money', 'rank', or 'fairy'
+# col can be 'password', 'location', 'exp', 'rank'
 def getInfo(username, col):
     if checkUsername(username):
         db = sqlite3.connect(DB_FILE)
@@ -99,11 +99,9 @@ def list_fruits(user_id):
     c = db.cursor()
     fruit = getInfo(getUsername(user_id), "fruits")
     splitfruit = fruit[0][:-1].split(',')
-    for i in splitfruit:
-        info = getFruit_Stats(int(i))
     db.commit()
     db.close()
-    return info
+    return splitfruit
 
 #grow a fruitling
 def grow_fruit(fruit_id, growth):
@@ -132,6 +130,30 @@ def getUsername(userID):
     db.text_factory = text_factory
     c = db.cursor()
     info = c.execute("SELECT username FROM users WHERE id=?;", [userID]).fetchone()
+    db.commit()
+    db.close()
+    if info is None:
+        return info
+    return info[0]
+
+#Gets a fruit type based on fruit id
+def getFruitType(fruitID):
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    info = c.execute("SELECT fruit_type FROM fruitlings WHERE fruit_id=?;", [fruitID]).fetchone()
+    db.commit()
+    db.close()
+    if info is None:
+        return info
+    return info[0]
+
+#same but for rank
+def getFruitRank(fruitID):
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    info = c.execute("SELECT growth FROM fruitlings WHERE fruit_id=?;", [fruitID]).fetchone()
     db.commit()
     db.close()
     if info is None:
@@ -168,7 +190,7 @@ def getFruit_Stats(fruit_id, requesttype):
             db.close()
         if requesttype == "img":
             img = c.execute("SELECT img FROM fruit_stats WHERE fruit_type=?", [info[2].capitalize()]).fetchone()
-            return img
+            return img[0]
             db.commit()
             db.close()
         if requesttype == "xp":
