@@ -190,7 +190,7 @@ def getFruit_Stats(fruit_id, requesttype):
             db.close()
         if requesttype == "img":
             img = c.execute("SELECT img FROM fruit_stats WHERE fruit_type=?", [info[2].capitalize()]).fetchone()
-            return img[0]
+            return img
             db.commit()
             db.close()
         if requesttype == "xp":

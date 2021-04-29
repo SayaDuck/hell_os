@@ -10,7 +10,12 @@ from datetime import datetime
 import os
 import sqlite3
 import hashlib
+import ast
 from hashlib import scrypt
+import urllib
+import json
+import random
+import requests
 import app.db_builder as dbb # BIG
 
 
@@ -51,10 +56,16 @@ def root():
     if 'username' in session:
         dictionary = []
         for i in dbb.list_fruits(session.get('ID')): # i love this bit. very much. bless dean for making easily adaptable helper functions that i only needed to modify a tiny bit to get full functionality out of
+            tempstr = ""
+            nutdict = ast.literal_eval(dbb.getFruit_Stats(i, 'nutrition'))
+            print(nutdict)
+            for j in nutdict:
+                print(j)
+                tempstr = tempstr + j + ": " + str(nutdict.get(j)) + " \n"
             tempdict = {
                 "name": dbb.getFruitType(i), 
-                "url": dbb.getFruit_Stats(i, 'img'), 
-                "desc": dbb.getFruit_Stats(i, 'nutrition'), 
+                "url": dbb.getFruit_Stats(i, 'img')[0], 
+                "desc": tempstr, 
                 "rank": dbb.getFruitRank(i)
             }
             dictionary.append(tempdict)
@@ -178,6 +189,19 @@ def levelup():
         dbb.grow_fruit(request.form['fruittype'])
         #minus user exp
 
+@app.route("/trivia")
+def trivia():
+    url = "https://opentdb.com/api.php?amount=1&type=multiple"
+    with urllib.request.urlopen(url) as response:
+        resp = response.read()
+        resp = json.loads(resp)
+        print(resp)
+        questiondict = resp.get('results')[0]
+        answerlist = questiondict.get('incorrect_answers')
+        answerlist.append(questiondict.get('correct_answer'))
+        random.shuffle(answerlist)
+        return render_template('trivia.html', question=questiondict.get('question'), difficulty=questiondict.get('difficulty'), answers=answerlist, money=dbb.getInfo(session.get('username'), 'exp')[0])
+ 
 
 
 
