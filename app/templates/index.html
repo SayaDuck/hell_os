@@ -1,14 +1,18 @@
 <!-- 
   VARIABLES:
 
+  /levelup = the url to increase the rank of the fruit
+
+  message = string ("successfully leveled up fruit" or "not enough money")
+  money = int (how much money the user currently has)
   dict = a list of dictionaries that contains every fruits the user owns.
 
   example:
   dict = [{"name":"FRUIT NAME", "url":"IMAGE URL", "desc":"NUTRI STATS", "rank":"FRUIT RANK"}]
   
   *get nutri stats from fruityvice
+  *get image url from PEXEL api
   *have a new dictionary for every fruit
-
  -->
 
 <!DOCTYPE html>
@@ -21,6 +25,7 @@
     <body>
         <a href="/trivia">Answer trivia questions to earn money!!</a>
         <br><br>
+        <p>Money: {{ money }}</p>
         {% for fruit in dict %}
         <div class="card" style="width: 18rem;">
             <img src="{{ fruit['url'] }}" class="card-img-top">
