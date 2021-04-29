@@ -37,3 +37,17 @@ jonathanL -- 2021-04-28 15:57
 - finally "finished" auth
 - wrote some of the epic-est comments that ever epic'd for auth
 - ok that was a lie auth was not done because I forgot to actually make it work
+
+ishitaG -- 2021-4-28
+- fixed bug: if users tries to go to home page without logging in, re-route
+- fix register:
+    - wrong flask form id's were used
+    - sql code written may have been buggy (switched to methods from db_builder)
+    - request.form vs. request.args
+- fix login:
+    - wrong flask form id's were used
+    - sql code written may have been buggy (switched to methods from db_builder)
+    - request.form vs. request.args
+- modify templates so users can go back and forth between the login and register pages
+
+

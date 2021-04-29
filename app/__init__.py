@@ -33,7 +33,7 @@ def saltStringRandom(string):
 
 def saltStringExisting(string, salt):
     hashedsalted = hashlib.pbkdf2_hmac('sha256', bytes(string, encoding='utf8'), bytes(salt, encoding='utf8'), 100000)
-    hashedsalted += salt
+    hashedsalted += bytes(salt, encoding='utf8')
     print(hashedsalted)
     return str(hashedsalted)
 
@@ -58,7 +58,7 @@ def login():
     if 'username' in session:
         return redirect(url_for('root'))
 
-    if len(request.form) > 0:
+    if "login" in request.form:
         
         #simple error check (currently empty field check), expand later
         if (request.form['inputusername'] == '' or request.form['inputpassword'] == ''): #Check if fields are filled
@@ -90,7 +90,7 @@ def register():
     if "username" in session:
         return redirect(url_for('root'))   
 
-    if len(request.form) > 0:
+    if "register" in request.form:
         #print(request.form)
 
         if (request.form['inputusername'] == '' or request.form['inputpassword'] == ''):

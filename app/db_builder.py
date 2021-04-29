@@ -86,7 +86,7 @@ def new_fruit(user_id, fruit_type):
     c.execute(command, (user_id, fruit_type))
     username = getUsername(user_id)
     user_fruits = getInfo(username, fruits)
-    user_fruits = user_fruits + c.execute("SELECT COUNT(*) FROM fruitlings") - 1
+    user_fruits = user_fruits + str(c.execute("SELECT COUNT(*) FROM fruitlings") - 1) + ","
     c.execute("UPDATE users SET fruits=? WHERE user_id=?;", (user_fruits, user_id))
     db.commit()
     db.close()
