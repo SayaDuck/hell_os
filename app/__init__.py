@@ -154,7 +154,7 @@ def logout():
 # the non-auth parts!!
 # -----------------------
 
-@app.route("/levelup")
+@app.route("/levelup") #sorta abandoned because of the reason you see below
 def levelup():
     #if balance > fruit xp req : 
     #   add to fruitlings rank
@@ -164,7 +164,10 @@ def levelup():
 
     #idk how i'm going to do this with the current template providing no(?) identifying info of the fruit being picked
     if dbb.getInfo(session.get('username'), 'exp') > dbb.getFruit_Stats(request.form['fruittype']):
+        #plus fruit growth stage
         dbb.grow_fruit(request.form['fruittype'])
+        #minus user exp
+
 
 
 
