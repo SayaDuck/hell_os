@@ -11,13 +11,12 @@ def createTables():
     db.text_factory = text_factory
     c = db.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT,
-              password TEXT, location TEXT, currency INTEGER, rank INTEGER, fairies INTEGER, fruits TEXT);""") #
-    c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (fruit_id INTEGER PRIMARY KEY, user_id INTEGER, fruit_type TEXT, stage_of_growth INTEGER);""")
+              password TEXT, location TEXT, currency INTEGER, rank INTEGER, fairies INTEGER, fruits TEXT);""")
+    c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (fruit_id INTEGER PRIMARY KEY, user_id INTEGER, fruit_type TEXT, growth INTEGER);""")
     c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (id INTEGER PRIMARY KEY, fruit TEXT, rarity INTEGER, fun_fact TEXT);""")
     c.execute("""CREATE TABLE IF NOT EXISTS store (id INTEGER PRIMARY KEY, name TEXT, fruit_stats_ID INTEGER, cost INTEGER, rank INTEGER);""")
     db.commit()
     db.close()
-
 
 createTables()
 
@@ -26,7 +25,7 @@ def register(username, password, location, fruits):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO users (username, password, location, 0, 1, 0, fruits) VALUES (?,?,?,?,?,?,?);"
+    command = "INSERT INTO users (username, password, location, currency, rank, fairies, fruits) VALUES (?,?,?,0,1,0,?);"
     c.execute(command, (username, password, location, fruits))
     db.commit()
     db.close()
@@ -72,7 +71,7 @@ def getInfo(username, col):
         db.text_factory = text_factory
         c = db.cursor()
         #Finds the user with the correct username
-        info = c.execute("SELECT " + col + " FROM users WHERE username=?;", [username]).fetchone()[0]
+        info = c.execute("SELECT " + col + " FROM users WHERE username=?;", [username]).fetchone()
         db.commit()
         db.close()
         return info
@@ -83,7 +82,7 @@ def new_fruit(user_id, fruit_type):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO fruitlings (user_id, fruit_type) VALUES (?,?,0)"
+    command = "INSERT INTO fruitlings (user_id, fruit_type, growth) VALUES (?,?,0)"
     c.execute(command, (user_id, fruit_type))
     username = getUsername(user_id)
     user_fruits = getInfo(username, fruits)
@@ -91,6 +90,17 @@ def new_fruit(user_id, fruit_type):
     c.execute("UPDATE users SET fruits=? WHERE user_id=?;", (user_fruits, user_id))
     db.commit()
     db.close()
+
+def list_fruits(user_id):
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    fruit = getInfo(getUsername(user_id), fruits)
+    for i in fruit.split(','):
+        info = getFruit_Stats(i)
+    db.commit()
+    db.close()
+    return info
 
 #grow a fruit
 def grow_fruit(fruit_id, growth):
@@ -124,9 +134,29 @@ def getUsername(userID):
         return info
     return info[0]
 
+def getFruit_Stats(fruit_id):
+    if (fruit_id <= (c.execute("SELECT COUNT(*) FROM fruitlings") - 1)):
+        db = sqlite3.connect(DB_FILE)
+        db.text_factory = text_factory
+        c = db.cursor()
+        info = c.execute("SELECT * FROM fruitlings WHERE fruit_id=?;", [fruit_id]).fetchall()
+        for i in info:
+            print (info[i])
+        db.commit()
+        db.close()
+        return info
+    return None
+
 def test():
     register("DeanC", "password", "New York", "apple")
-    new_fruit(0, "bananna")
+    print (getUsername(0))
+    #new_fruit(0, "bananna")
+    grow_fruit(0, 2)
+    #list_fruits(0)
+    printDatabase()
+
+test()
+
 
 """
 # changes a user's blog info given a new blog name and description
