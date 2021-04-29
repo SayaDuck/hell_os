@@ -137,6 +137,16 @@ def getUsername(userID):
         return info
     return info[0]
 
+#gain exp from trivia (lose exp with negative gain)
+def expUp(user_id, gain):
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    grew = c.execute("SELECT exp FROM users WHERE user_id=?", [user_id]).fetchone()[0]
+    c.execute("UPDATE users SET exp=? WHERE user_id=?;", (exp + gain, user_id))
+    db.commit()
+    db.close()
+
 def getFruit_Stats(fruit_id):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
@@ -180,7 +190,7 @@ def test():
     #register("DeanC", "password", "New York", "")
     print (getUsername(1))
     #new_fruit(1, "apple")
-    grow_fruit(1, 2)
+    #grow_fruit(1, 2)
     list_fruits(1)
     printDatabase()
 
