@@ -97,8 +97,13 @@ def list_fruits(user_id):
     db.text_factory = text_factory
     c = db.cursor()
     fruit = getInfo(getUsername(user_id), "fruits")
-    for i in fruit[0].split(','):
-        info = getFruit_Stats(i)
+    splitfruit = fruit[0][:-1].split(',')
+    print("splitfruit")
+    print(splitfruit)
+    for i in splitfruit:
+        info = getFruit_Stats(int(i))
+        print("infoiteration")
+        print(info)
     db.commit()
     db.close()
     return info
