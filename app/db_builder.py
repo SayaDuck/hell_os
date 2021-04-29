@@ -53,7 +53,7 @@ def printDatabase():
     for row in c.execute("SELECT * FROM users;"):
         print(row)
     print("--------Fruitling Table-------")
-    for row in c.execute("SELECT * FROM users;"):
+    for row in c.execute("SELECT * FROM fruitlings;"):
         print(row)
     print("-------Fruit Table----------")
     for row in c.execute("SELECT * FROM fruit_stats;"):
@@ -85,7 +85,7 @@ def new_fruit(user_id, fruit_type):
     command = "INSERT INTO fruitlings (user_id, fruit_type, growth) VALUES (?,?,0)"
     c.execute(command, (user_id, fruit_type))
     username = getUsername(user_id)
-    user_fruits = getInfo(username, fruits)
+    user_fruits = getInfo(username, "fruits")
     user_fruits = user_fruits + str(c.execute("SELECT COUNT(*) FROM fruitlings") - 1) + ","
     c.execute("UPDATE users SET fruits=? WHERE user_id=?;", (user_fruits, user_id))
     db.commit()
@@ -95,7 +95,7 @@ def list_fruits(user_id):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    fruit = getInfo(getUsername(user_id), fruits)
+    fruit = getInfo(getUsername(user_id), "fruits")
     for i in fruit.split(','):
         info = getFruit_Stats(i)
     db.commit()
@@ -149,10 +149,10 @@ def getFruit_Stats(fruit_id):
 
 def test():
     register("DeanC", "password", "New York", "apple")
-    print (getUsername(0))
-    #new_fruit(0, "bananna")
-    grow_fruit(0, 2)
-    #list_fruits(0)
+    print (getUsername(1))
+    new_fruit(1, "bannana")
+    grow_fruit(1, 2)
+    list_fruits(1)
     printDatabase()
 
 test()
