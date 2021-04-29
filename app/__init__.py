@@ -154,9 +154,14 @@ def logout():
 # the non-auth parts!!
 # -----------------------
 
-def buyfruit(fruitname):
-    c = db.cursor()
-    c.execute()
+@app.route("/levelup")
+def levelup():
+    
+
+
+
+
+
 
 
 if __name__ == "__main__":
