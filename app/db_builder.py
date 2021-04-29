@@ -11,21 +11,21 @@ def createTables():
     db.text_factory = text_factory
     c = db.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT,
-              password TEXT, location TEXT, currency INTEGER, rank INTEGER, fairies INTEGER, fruits TEXT);""")
+              password TEXT, location TEXT, exp INTEGER, fruits TEXT);""")
     c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (fruit_id INTEGER PRIMARY KEY, user_id INTEGER, fruit_type TEXT, growth INTEGER);""")
-    c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (id INTEGER PRIMARY KEY, fruit TEXT, rarity INTEGER, fun_fact TEXT);""")
-    c.execute("""CREATE TABLE IF NOT EXISTS store (id INTEGER PRIMARY KEY, name TEXT, fruit_stats_ID INTEGER, cost INTEGER, rank INTEGER);""")
+#    c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (fruit_type TEXT, nutrition )""")
     db.commit()
     db.close()
 
 createTables()
+
 
 # adds user info to user table
 def register(username, password, location, fruits):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO users (username, password, location, currency, rank, fairies, fruits) VALUES (?,?,?,0,1,0,?);"
+    command = "INSERT INTO users (username, password, location, exp, fruits) VALUES (?,?,?,0,?);"
     c.execute(command, (username, password, location, fruits))
     db.commit()
     db.close()
@@ -87,7 +87,7 @@ def new_fruit(user_id, fruit_type):
     username = getUsername(user_id)
     user_fruits = getInfo(username, "fruits")
     c.execute("SELECT COUNT(*) FROM fruitlings")
-    user_fruits = user_fruits[0] + str(int(c.fetchone()[0]) - 1) + ","
+    user_fruits = user_fruits[0] + str(int(c.fetchone()[0])) + ","
     c.execute("UPDATE users SET fruits=? WHERE id=?;", (user_fruits, user_id))
     db.commit()
     db.close()
@@ -98,12 +98,8 @@ def list_fruits(user_id):
     c = db.cursor()
     fruit = getInfo(getUsername(user_id), "fruits")
     splitfruit = fruit[0][:-1].split(',')
-    print("splitfruit")
-    print(splitfruit)
     for i in splitfruit:
         info = getFruit_Stats(int(i))
-        print("infoiteration")
-        print(info)
     db.commit()
     db.close()
     return info
@@ -113,7 +109,8 @@ def grow_fruit(fruit_id, growth):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = ("UPDATE fruitlings SET growth=? WHERE fruit_id=?;", (growth + 1, fruit_id))
+    grew = c.execute("SELECT growth FROM fruitlings WHERE fruit_id=?", [fruit_id]).fetchone()
+    c.execute("UPDATE fruitlings SET growth=? WHERE fruit_id=?;", (growth + grew[0], fruit_id))
     db.commit()
     db.close()
 
@@ -145,25 +142,41 @@ def getFruit_Stats(fruit_id):
     db.text_factory = text_factory
     c = db.cursor()
     c.execute("SELECT COUNT(*) FROM fruitlings")
-    if (int(fruit_id) <= (int(c.fetchone()[0]) - 1)):
+    if (int(fruit_id) <= (int(c.fetchone()[0]))):
         db = sqlite3.connect(DB_FILE)
         db.text_factory = text_factory
         c = db.cursor()
-        info = c.execute("SELECT * FROM fruitlings WHERE fruit_id=?;", [fruit_id]).fetchall()
-        print('info') # something in the bottom lines is wrong but idk what
-        print(info)
-        for i in info[0]:
-            print (info[0][i])
+        info = c.execute("SELECT * FROM fruitlings WHERE fruit_id=?;", [fruit_id]).fetchall()[0]
+        print ("Fruit " + str(info[0]) + ": \n" + "  Type: " + str(info[2]) + "\n  Growth: " + str(info[3]))
         db.commit()
         db.close()
         return info
     return None
 
+# deletes all users from the database (for testing purposes)
+def clearUsers():
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    c.execute("DELETE from users;")
+    db.commit()
+    db.close()
+
+def clearFruits():
+    db = sqlite3.connect(DB_FILE)
+    db.text_factory = text_factory
+    c = db.cursor()
+    c.execute("DELETE from fruitlings;")
+    db.commit()
+    db.close()
+
 def test():
-    register("DeanC", "password", "New York", "")
+    #clearUsers()
+    #clearFruits()
+    #register("DeanC", "password", "New York", "")
     print (getUsername(1))
-    new_fruit(1, "banana")
-    grow_fruit(1, 2)
+    #new_fruit(1, "apple")
+    #grow_fruit(1, 2)
     list_fruits(1)
     printDatabase()
 
@@ -199,15 +212,6 @@ def getBlogs():
     db.commit()
     db.close()
     return blogs
-
-# deletes all users from the database (for testing purposes)
-def clearUsers():
-    db = sqlite3.connect(DB_FILE)
-    db.text_factory = text_factory
-    c = db.cursor()
-    c.execute("DELETE from users;")
-    db.commit()
-    db.close()
 
 # Delete a specific user
 def clearUser(username):
