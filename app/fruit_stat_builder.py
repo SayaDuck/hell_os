@@ -1,7 +1,7 @@
 import urllib
 import json
 import requests
-import db_builder as dbb
+import app.db_builder as dbb
 
 def main():
     # open the file containing the api key
