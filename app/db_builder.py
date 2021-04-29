@@ -13,7 +13,7 @@ def createTables():
     c.execute("""CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT,
               password TEXT, location TEXT, exp INTEGER, fruits TEXT);""")
     c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (fruit_id INTEGER PRIMARY KEY, user_id INTEGER, fruit_type TEXT, growth INTEGER);""")
-    c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (fruit_type TEXT, nutrition TEXT, img TEXT)""")
+    c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (fruit_type TEXT, nutrition TEXT, img TEXT, xpreq INTEGER)""")
     db.commit()
     db.close()
 
@@ -115,12 +115,12 @@ def grow_fruit(fruit_id, growth):
     db.close()
 
 # adds fruit to the game
-def add_fruit(fruit, nutrition, img):
+def add_fruit(fruit, nutrition, img, xp):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO fruit_stats (fruit_type, nutrition, img) VALUES (?,?,?);"
-    c.execute(command, (fruit, nutrition, img))
+    command = "INSERT INTO fruit_stats (fruit_type, nutrition, img, xpreq) VALUES (?,?,?,?);"
+    c.execute(command, (fruit, nutrition, img, xp))
     db.commit()
     db.close()
 
@@ -143,7 +143,7 @@ def expUp(user_id, gain):
     db.text_factory = text_factory
     c = db.cursor()
     grew = c.execute("SELECT exp FROM users WHERE user_id=?", [user_id]).fetchone()[0]
-    c.execute("UPDATE users SET exp=? WHERE user_id=?;", (exp + gain, user_id))
+    c.execute("UPDATE users SET exp=? WHERE user_id=?;", (grew + gain, user_id))
     db.commit()
     db.close()
 

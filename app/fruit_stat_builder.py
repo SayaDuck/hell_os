@@ -1,7 +1,7 @@
 import urllib
 import json
 import requests
-import db_builder as dbb
+import db_builder as dbb # weirdly this works as db_builder
 
 def main():
     # open the file containing the api key
@@ -15,12 +15,14 @@ def main():
         resp = response.read()
     # convert bytes to python dictionary
         resp = json.loads(resp)
+        xp = 0
         for i in resp:
+            xp += 10
             name = i["name"]
             print (name)
             nutrition = i["nutritions"]
             print (nutrition)
-            dbb.add_fruit(name,str(nutrition),img(name))
+            dbb.add_fruit(name,str(nutrition),img(name), xp)
             print (img(name))
 
 def img(search_query):

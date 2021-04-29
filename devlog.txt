@@ -66,4 +66,8 @@ jonathanL -- 2021-04-29 02:59
 deanC -- 2021-04-29 03:40
 - fruit_stat_builder.py to fill fruit stat information
 
+jonathanL -- 2021-04-29 05:10
+- fixed expUp
+- edited README
+
 

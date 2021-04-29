@@ -11,7 +11,9 @@ Do you love fruits? Do you like virtual farm simulators? Well this may or may no
 
 ## API Card
 [We used Fruityvice for information about the fruits users own](https://github.com/stuy-softdev/notes-and-code20-21/blob/master/api_kb/411_on_Fruityvice.md)
+
 [Used unsplash to get pictures of fruits](https://github.com/stuy-softdev/notes-and-code20-21/blob/master/api_kb/411_on_Unsplash.md)
+
 [Used trivia API to get questions](https://github.com/stuy-softdev/notes-and-code20-21/blob/master/api_kb/411_on_OpenTriviaDB.md)
 
 ## Launch Codes
