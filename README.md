@@ -17,4 +17,4 @@ Do you love fruits? Do you like virtual farm simulators? Well this may or may no
 ## Launch Codes
 1. Clone the repo!
 2. Install the required modules: `pip install -r requirements.txt`
-3. Run \__init_.py
+3. Run \_init_.py
