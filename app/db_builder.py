@@ -13,7 +13,7 @@ def createTables():
     c.execute("""CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT,
               password TEXT, location TEXT, exp INTEGER, fruits TEXT);""")
     c.execute("""CREATE TABLE IF NOT EXISTS fruitlings (fruit_id INTEGER PRIMARY KEY, user_id INTEGER, fruit_type TEXT, growth INTEGER);""")
-#    c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (fruit_type TEXT, nutrition )""")
+    c.execute("""CREATE TABLE IF NOT EXISTS fruit_stats (fruit_type TEXT, nutrition TEXT, img TEXT)""")
     db.commit()
     db.close()
 
@@ -115,12 +115,12 @@ def grow_fruit(fruit_id, growth):
     db.close()
 
 # adds fruit to the game
-def add_fruit(fruit, rarity, fact):
+def add_fruit(fruit, nutrition, img):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
-    command = "INSERT INTO fruit_stats (fruit, rarity, fact) VALUES (?,?,?);"
-    c.execute(command, (fruit, rarity, fact))
+    command = "INSERT INTO fruit_stats (fruit_type, nutrition, img) VALUES (?,?,?);"
+    c.execute(command, (fruit, nutrition, img))
     db.commit()
     db.close()
 
@@ -173,10 +173,10 @@ def clearFruits():
 def test():
     #clearUsers()
     #clearFruits()
-    #register("DeanC", "password", "New York", "")
+    register("DeanC", "password", "New York", "")
     print (getUsername(1))
-    #new_fruit(1, "apple")
-    #grow_fruit(1, 2)
+    new_fruit(1, "apple")
+    grow_fruit(1, 2)
     list_fruits(1)
     printDatabase()
 
