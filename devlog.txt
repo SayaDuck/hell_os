@@ -48,5 +48,6 @@ ishitaG -- 2021-4-28
     - wrong flask form id's were used
     - sql code written may have been buggy (switched to methods from db_builder)
     - request.form vs. request.args
+- modify templates so users can go back and forth between the login and register pages
 
 
