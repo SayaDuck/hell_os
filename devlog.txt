@@ -38,7 +38,7 @@ jonathanL -- 2021-04-28 15:57
 - wrote some of the epic-est comments that ever epic'd for auth
 - ok that was a lie auth was not done because I forgot to actually make it work
 
-ishitaG -- 2021-4-28 16:34
+ishitaG -- 2021-04-28 16:34
 - fixed bug: if users tries to go to home page without logging in, re-route
 - fix register:
     - wrong flask form id's were used
@@ -50,15 +50,20 @@ ishitaG -- 2021-4-28 16:34
     - request.form vs. request.args
 - modify templates so users can go back and forth between the login and register pages
 
-dragosL -- 2021-4-28 17:42
+dragosL -- 2021-04-28 17:42
 - added javascript for trivia message
 
-ishitaG -- 2021-4-28 21:32
+ishitaG -- 2021-04-28 21:32
 - update the index template to show the users fruits and allow them to level up the fruits
 - add linkage between the pages to allow user to traverse the site
 
-dragosL -- 2021-4-29 00:04
+dragosL -- 2021-04-29 00:04
 - Added the team flag and the README
 
 jonathanL -- 2021-04-29 02:59
 - finally finalized auth (100% working finally yes finalized)
+
+deanC -- 2021-04-29 03:40
+- fruit_stat_builder.py to fill fruit stat information
+
+

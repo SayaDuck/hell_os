@@ -184,17 +184,17 @@ def clearFruits():
     db.commit()
     db.close()
 
-def test():
-    #clearUsers()
-    #clearFruits()
-    #register("DeanC", "password", "New York", "")
-    print (getUsername(1))
-    #new_fruit(1, "apple")
-    #grow_fruit(1, 2)
-    list_fruits(1)
-    printDatabase()
+# def test():
+#     #clearUsers()
+#     #clearFruits()
+#     #register("DeanC", "password", "New York", "")
+#     print (getUsername(1))
+#     #new_fruit(1, "apple")
+#     #grow_fruit(1, 2)
+#     list_fruits(1)
+#     printDatabase()
 
-test()
+# test()
 
 
 """
