@@ -92,6 +92,7 @@ def new_fruit(user_id, fruit_type):
     db.commit()
     db.close()
 
+#list fruitlings
 def list_fruits(user_id):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
@@ -104,7 +105,7 @@ def list_fruits(user_id):
     db.close()
     return info
 
-#grow a fruit
+#grow a fruitling
 def grow_fruit(fruit_id, growth):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
@@ -147,7 +148,8 @@ def expUp(user_id, gain):
     db.commit()
     db.close()
 
-def getFruit_Stats(fruit_id):
+#fruitling info, either "img", "nutrition", or "xp"
+def getFruit_Stats(fruit_id, requesttype):
     db = sqlite3.connect(DB_FILE)
     db.text_factory = text_factory
     c = db.cursor()
@@ -158,13 +160,26 @@ def getFruit_Stats(fruit_id):
         c = db.cursor()
         info = c.execute("SELECT * FROM fruitlings WHERE fruit_id=?;", [fruit_id]).fetchall()[0]
         print ("Fruit " + str(info[0]) + ": \n" + "  Type: " + str(info[2]) + "\n  Growth: " + str(info[3]))
-        nutrition = c.execute("SELECT nutrition FROM fruit_stats WHERE fruit_type=?", [info[2].capitalize()]).fetchone()
-        nutrition = nutrition[0]
-        print (nutrition)
-        img = c.execute("SELECT img FROM fruit_stats WHERE fruit_type=?", [info[2].capitalize()]).fetchone()
+        if requesttype == "nutrition":
+            nutrition = c.execute("SELECT nutrition FROM fruit_stats WHERE fruit_type=?", [info[2].capitalize()]).fetchone()
+            nutrition = nutrition[0]
+            return nutrition
+            db.commit()
+            db.close()
+        if requesttype == "img":
+            img = c.execute("SELECT img FROM fruit_stats WHERE fruit_type=?", [info[2].capitalize()]).fetchone()
+            return img
+            db.commit()
+            db.close()
+        if requesttype == "xp":
+            xp = c.execute("SELECT xpreq FROM fruit_stats WHERE fruit_type=?"), [info[2]].fetchone()
+            return xp
+            db.commit()
+            db.close()
         db.commit()
         db.close()
-        return img
+        
+        
     return None
 
 # deletes all users from the database (for testing purposes)
