@@ -80,3 +80,7 @@ jonathanL -- 2021-04-29 06:34
 - changed to <pre> for desc- newline support and preformatted nature looks very nice
 - added spacing to each page
 - implemented trivia page, at least the beginnings of it
+
+ishitaG -- 2021-4-29 21:10
+- Update template to support leveling up of fruits  
+    - add form for every fruit with "level up" as the submit button
